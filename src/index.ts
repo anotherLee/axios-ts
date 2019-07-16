@@ -54,6 +54,11 @@ function transformHeaders(config: AxiosRequestConfig): any {
   return processHeaders(headers, data)
 }
 
+/**
+ * 处理数据中的data，如果是JSON字符串，转换成对象
+ * @param {AxiosResponse} res 请求返回的数据
+ * @returns {AxiosResponse}
+ */
 function transformResponseData(res: AxiosResponse): AxiosResponse {
   res.data = transformResponse(res.data)
   return res
