@@ -31,7 +31,7 @@ function processConfig(config: AxiosRequestConfig): void {
  */
 function transformURL(config: AxiosRequestConfig): string {
   let { url, params } = config
-  return buildURL(url, params)
+  return buildURL((url = ''), params)
 }
 
 /**
@@ -64,4 +64,5 @@ function transformResponseData(res: AxiosResponse): AxiosResponse {
   return res
 }
 
+// export * from "./types"
 export default axios
