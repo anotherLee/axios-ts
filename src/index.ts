@@ -1,16 +1,17 @@
-import { AxiosRequestConfig } from './types'
+import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from './types'
 import xhr from './xhr'
 import { buildURL } from './helpers/url'
-import { transformRequest } from './helpers/data'
-import { processHeaders} from './helpers/headers'
+import { transformRequest, transformResponse } from './helpers/data'
+import { processHeaders } from './helpers/headers'
 
 /**
  * 用户使用的axios方法
  * @param {AxiosRequestConfig} config axios配置
  */
-function axios(config: AxiosRequestConfig): void {
-  processConfig(config);
-  xhr(config)
+function axios(config: AxiosRequestConfig): AxiosPromise {
+  processConfig(config)
+  // 先then下来处理res里的data的格式问题
+  return xhr(config).then((res: AxiosResponse) => transformResponseData(res))
 }
 
 /**
@@ -18,9 +19,9 @@ function axios(config: AxiosRequestConfig): void {
  * @param {AxiosRequestConfig} config
  */
 function processConfig(config: AxiosRequestConfig): void {
-  config.url = transformURL(config);
-  config.headers = transformHeaders(config); // headers的处理必须写到data处理之前，因为后续data可能会被处理成JSON字符串
-  config.data = transformRequestData(config);
+  config.url = transformURL(config)
+  config.headers = transformHeaders(config) // headers的处理必须写到data处理之前，因为后续data可能会被处理成JSON字符串
+  config.data = transformRequestData(config)
 }
 
 /**
@@ -29,8 +30,8 @@ function processConfig(config: AxiosRequestConfig): void {
  * @returns {string} 处理过后的url
  */
 function transformURL(config: AxiosRequestConfig): string {
-  let { url, params } = config;
-  return buildURL(url, params);
+  let { url, params } = config
+  return buildURL(url, params)
 }
 
 /**
@@ -39,8 +40,8 @@ function transformURL(config: AxiosRequestConfig): string {
  * @returns {any} 处理过后的data
  */
 function transformRequestData(config: AxiosRequestConfig): any {
-  let { data } = config;
-  return transformRequest(data);
+  let { data } = config
+  return transformRequest(data)
 }
 
 /**
@@ -49,8 +50,13 @@ function transformRequestData(config: AxiosRequestConfig): any {
  * @returns {any} 处理过后的headers
  */
 function transformHeaders(config: AxiosRequestConfig): any {
-  const { headers={}, data } = config; // 这里注意headers的默认值，在不传headers的情况下，如果data传了普通类型的对象也要加Content-Type
-  return processHeaders(headers, data);
+  const { headers = {}, data } = config // 这里注意headers的默认值，在不传headers的情况下，如果data传了普通类型的对象也要加Content-Type
+  return processHeaders(headers, data)
+}
+
+function transformResponseData(res: AxiosResponse): AxiosResponse {
+  res.data = transformResponse(res.data)
+  return res
 }
 
 export default axios
