@@ -13,12 +13,11 @@ export function transformRequest(data: any) {
 }
 
 /**
- *
  * @param response 请求拿到的数据
  * @returns {any}
  */
 export function transformResponse(response: any): any {
-  if (typeof response === 'string') {
+  if (response && typeof response === 'string') {
     response = JSON.parse(response)
   }
   return response

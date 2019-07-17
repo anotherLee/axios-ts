@@ -50,16 +50,17 @@ export interface AxiosError extends Error {
 // Axios接口，内含所有的属性方法
 export interface Axios {
   request(config: AxiosRequestConfig): AxiosPromise
-  get(url: string, config: AxiosRequestConfig): AxiosPromise
-  delete(url: string, config: AxiosRequestConfig): AxiosPromise
-  head(url: string, config: AxiosRequestConfig): AxiosPromise
-  options(url: string, config: AxiosRequestConfig): AxiosPromise
-  post(url: string, data: any, config: AxiosRequestConfig): AxiosPromise
-  put(url: string, data: any, config: AxiosRequestConfig): AxiosRequestConfig
-  patch(url: string, data: any, config: AxiosRequestConfig): AxiosRequestConfig
+  get(url: string, config?: AxiosRequestConfig): AxiosPromise
+  delete(url: string, config?: AxiosRequestConfig): AxiosPromise
+  head(url: string, config?: AxiosRequestConfig): AxiosPromise
+  options(url: string, config?: AxiosRequestConfig): AxiosPromise
+  post(url: string, data: any, config?: AxiosRequestConfig): AxiosPromise
+  put(url: string, data: any, config?: AxiosRequestConfig): AxiosRequestConfig
+  patch(url: string, data: any, config?: AxiosRequestConfig): AxiosRequestConfig
 }
 
-// axios混合对象实例
+// axios混合对象实例，包含重载
 export interface AxiosInstance extends Axios {
   (config: AxiosRequestConfig): AxiosPromise
+  (url: string, config?: AxiosRequestConfig): AxiosPromise
 }
