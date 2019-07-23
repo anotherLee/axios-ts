@@ -1,3 +1,5 @@
+import InterceptorManager from '../core/InterceptorManager'
+
 export type Method =
   | 'get'
   | 'GET'
@@ -49,6 +51,11 @@ export interface AxiosError extends Error {
 
 // Axios接口，内含所有的属性方法
 export interface Axios {
+  interceptors: {
+    request: InterceptorManager<AxiosRequestConfig>
+    response: InterceptorManager<AxiosResponse>
+  }
+
   request<T = any>(config: AxiosRequestConfig): AxiosPromise<T>
 
   get<T>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>

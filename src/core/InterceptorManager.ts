@@ -21,10 +21,10 @@ export default class InterceptorManager<T> {
   }
 
   /**
-   * 内部遍历拦截器，内部使用
+   * 内部遍历拦截器
    * @param {(interceptor: Interceptor<T>) => void} fn
    */
-  private forEach(fn: (interceptor: Interceptor<T>) => void) {
+  forEach(fn: (interceptor: Interceptor<T>) => void) {
     this.interceptors.forEach((i: Interceptor<T> | null): void => {
       if (i !== null) {
         fn(i)

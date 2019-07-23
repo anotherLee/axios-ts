@@ -1,10 +1,22 @@
-import { AxiosPromise, AxiosRequestConfig, AxiosResponse, Method } from '../types'
+import {
+  AxiosPromise,
+  AxiosRequestConfig,
+  AxiosResponse,
+  Method,
+  RejectedFn,
+  ResolvedFn
+} from '../types'
 import dispatchRequest from './dispatchRequest'
 import InterceptorManager from './InterceptorManager'
 
 interface Interceptors {
   request: InterceptorManager<AxiosRequestConfig>
   response: InterceptorManager<AxiosResponse>
+}
+
+interface PromiseChain<T> {
+  resolved: ResolvedFn<T> | ((config: AxiosRequestConfig) => AxiosPromise)
+  rejected?: RejectedFn
 }
 
 export default class Axios {
@@ -33,7 +45,28 @@ export default class Axios {
     } else {
       config = url // 注意这里
     }
-    return dispatchRequest(config)
+
+    const chain: PromiseChain<any>[] = [
+      {
+        resolved: dispatchRequest,
+        rejected: undefined
+      }
+    ]
+
+    this.interceptors.request.forEach(interceptor => {
+      chain.unshift(interceptor)
+    })
+    this.interceptors.response.forEach(interceptor => {
+      chain.push(interceptor)
+    })
+
+    let promise = Promise.resolve(config)
+    while (chain.length) {
+      let { resolved, rejected } = chain.shift()!
+      promise = promise.then(resolved, rejected)
+    }
+
+    return promise
   }
 
   /**
@@ -120,6 +153,7 @@ export default class Axios {
   head(url: string, config?: AxiosRequestConfig): AxiosPromise {
     return this._requestMethodWithoutData(url, 'head', config)
   }
+
   /**
    * post方法简写
    * @param {string} url

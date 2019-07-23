@@ -72,6 +72,7 @@ router.get('/error/timeout', function(req, res) {
 })
 
 registerExtendRouter()
+registerInterceptorsRouter()
 
 app.use(router)
 
@@ -114,5 +115,11 @@ function registerExtendRouter() {
         age: 18
       }
     })
+  })
+}
+
+function registerInterceptorsRouter() {
+  router.get('/interceptor/get', function(req, res) {
+    res.end('hello')
   })
 }
