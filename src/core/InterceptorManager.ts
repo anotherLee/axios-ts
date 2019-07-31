@@ -21,7 +21,7 @@ export default class InterceptorManager<T> {
   }
 
   /**
-   * 内部遍历拦截器
+   * 让外部使用访问内部数据
    * @param {(interceptor: Interceptor<T>) => void} fn
    */
   forEach(fn: (interceptor: Interceptor<T>) => void) {
